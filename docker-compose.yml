@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+  httpd:
+    image: httpd
+    container_name: mta-sts_chrislane_com
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ./config/httpd/httpd.conf:/usr/local/apache2/conf/httpd.conf
+      - ./public/:/usr/local/apache2/htdocs
+      - /var/log/httpd/error_log:/var/log/httpd/error_log
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mta-sts-chrislane-com.entrypoints=web"
+      - "traefik.http.routers.mta-sts-chrislane-com.rule=Host(`mta-sts.chrislane.com`)"
+      - "traefik.http.routers.mta-sts-chrislane-com.middlewares=secured-hsts@file"
+      - "traefik.http.routers.mta-sts-chrislane-com-secure.entrypoints=web-secure"
+      - "traefik.http.routers.mta-sts-chrislane-com-secure.rule=Host(`mta-sts.chrislane.com`)"
+      - "traefik.http.routers.mta-sts-chrislane-com-secure.middlewares=secured-hsts@file"
+      - "traefik.http.routers.mta-sts-chrislane-com-secure.tls=true"
+      - "traefik.docker.network=proxy"
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
