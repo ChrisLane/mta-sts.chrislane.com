@@ -11,9 +11,11 @@ services:
       - /var/log/httpd/error_log:/var/log/httpd/error_log
     labels:
       - "traefik.enable=true"
+      # HTTP Router
       - "traefik.http.routers.mta-sts-chrislane-com.entrypoints=web"
       - "traefik.http.routers.mta-sts-chrislane-com.rule=Host(`mta-sts.chrislane.com`)"
       - "traefik.http.routers.mta-sts-chrislane-com.middlewares=secured-hsts@file"
+      # HTTPS Router
       - "traefik.http.routers.mta-sts-chrislane-com-secure.entrypoints=web-secure"
       - "traefik.http.routers.mta-sts-chrislane-com-secure.rule=Host(`mta-sts.chrislane.com`)"
       - "traefik.http.routers.mta-sts-chrislane-com-secure.middlewares=secured-hsts@file"
